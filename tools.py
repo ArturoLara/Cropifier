@@ -1,6 +1,5 @@
 import argparse
 import matplotlib.pyplot as plt
-import pandas as pd
 
 #read Args
 def get_args():
@@ -16,7 +15,7 @@ def get_args():
     return args
 
 #save plot
-def save_confusion_matrix(matrix, class_names, output):
+def confusion_matrix(matrix, class_names, output = ""):
     # Visualizar la matriz de confusión con matplotlib
     plt.figure(figsize=(8, 6))
     plt.imshow(matrix, interpolation='nearest', cmap='Blues')
@@ -36,4 +35,8 @@ def save_confusion_matrix(matrix, class_names, output):
     plt.ylabel("Etiqueta real")
     plt.xlabel("Predicción")
     plt.tight_layout()
-    plt.savefig(output)
+
+    if output:
+        plt.savefig(output)
+    else:
+        plt.show()
