@@ -6,26 +6,11 @@ import pandas as pd
 def get_args():
     parser = argparse.ArgumentParser(description='Process some machine learning tasks.')
 
-    subparsers = parser.add_subparsers(dest='command', required=True)
-
-    # Subparser for the 'fit' command
-    parser_fit = subparsers.add_parser('fit', help='Fit the model with the given datasets.')
-    parser_fit.add_argument('X_dataset', type=str, help='Path to the input features dataset.')
-    parser_fit.add_argument('Y_dataset', type=str, help='Path to the target values dataset.')
-    parser_fit.add_argument('output', type=str, help='Path to save the fitted model.')
-
-    # Subparser for the 'predict' command
-    parser_predict = subparsers.add_parser('predict', help='Predict using the given model and dataset.')
-    parser_predict.add_argument('model_file', type=str, help='Path to the model file.')
-    parser_predict.add_argument('X_dataset', type=str, help='Path to the input features dataset.')
-    parser_predict.add_argument('output', type=str, help='Path to save the predictions.')
-
-    # Subparser for the 'score' command
-    parser_score = subparsers.add_parser('score', help='Score the model using the given datasets.')
-    parser_score.add_argument('model_file', type=str, help='Path to the model file.')
-    parser_score.add_argument('X_dataset', type=str, help='Path to the input features dataset.')
-    parser_score.add_argument('Y_dataset', type=str, help='Path to the target values dataset.')
-    parser_score.add_argument('--output', type=str, help='Optional path to save the confusion matrix results.')
+    parser.add_argument('-m', '--model_file', type=str, required=False, help='Needed to predict: Path to the model file.')
+    parser.add_argument('-x','--x_dataset', type=str, required=True, help='Path to the input features dataset.')
+    parser.add_argument('-y','--y_dataset', type=str, required=False, help='Needed to fit: Path to the target values dataset.')
+    parser.add_argument('-o','--output', type=str, required=True, help='Path to save the predictions or the model.')
+    parser.add_argument('-om','--out_matrix', type=str, required=False, help='Optional path to save the confusion matrix results.')
 
     args = parser.parse_args()
     return args
