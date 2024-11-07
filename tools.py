@@ -37,14 +37,3 @@ def save_confusion_matrix(matrix, class_names, output):
     plt.xlabel("Predicción")
     plt.tight_layout()
     plt.savefig(output)
-
-#load CSV
-def load_csv(csv_path, separator = ';', decimal = '.', index = 'id'):
-
-    data = pd.read_csv(csv_path, sep=separator, decimal=decimal, index_col=index)
-    return data
-
-#save CSV
-def export_csv(output, data, separator = ';', decimal = '.', index = 'id'):
-
-    data.to_csv(output, sep=separator, decimal=decimal, index_col=index)
