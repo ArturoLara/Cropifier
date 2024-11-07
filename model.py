@@ -5,7 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix
-from sklearn.externals import joblib
+import joblib
 
 class Model:
 
@@ -35,6 +35,7 @@ class Model:
         x_train_init, x_test_init, y_train_init, y_test_init = train_test_split(x_res, y_res, test_size=0.2, random_state=1234)
 
         self.__pipe.fit(x_train_init, y_train_init[['Crop']].values.ravel())
+        self.__export_model(output)
 
         return self.__score(x_test_init, y_test_init)
 
