@@ -3,7 +3,14 @@ import tools
 
 if __name__ == '__main__':
 
-    #read Args
+    args = tools.getArgs()
+
+    if args.command == 'fit':
+        pass
+    elif args.command == 'predict':
+        pass
+    elif args.command == 'score':
+        pass
 
     #funciton choose:
         #fit
