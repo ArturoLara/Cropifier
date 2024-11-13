@@ -5,6 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix
+from sklearn.ensemble import RandomForestClassifier
 import joblib
 
 class Model:
@@ -22,7 +23,9 @@ class Model:
         input_preprocess.append(('varthresh', feat_selector))
 
         preprocess_pipe = Pipeline(input_preprocess)
-        classifier_pipe = Pipeline([('clf_SVC', SVC(kernel='poly', degree=8))])
+        #classifier_pipe = Pipeline([('clf_SVC', SVC(kernel='poly', degree=8))])
+        classifier_pipe = Pipeline([('clf_RF', RandomForestClassifier(n_estimators=1000))])
+
         self.__pipe = Pipeline([('preprocess', preprocess_pipe), ('classifier', classifier_pipe)])
 
     def load_model(self, model):
