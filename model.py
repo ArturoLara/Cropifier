@@ -35,8 +35,12 @@ class Model:
         rf_clf = RandomForestClassifier(n_estimators=1000)
         nbc_clf  = GaussianNB()
 
+        # voting_clf = VotingClassifier(
+        #    estimators=[('lin', lin_clf),  ('svc', svm_clf), ('rf', rf_clf), ('nbc',nbc_clf)],
+        #    voting=voting_system)
+        
         voting_clf = VotingClassifier(
-            estimators=[('lin', lin_clf),  ('svc', svm_clf), ('rf', rf_clf), ('nbc',nbc_clf)],
+            estimators=[('lin', lin_clf),  ('svc', svm_clf), ('rf', rf_clf)],
             voting=voting_system)
 
         classifier_pipe = Pipeline([('voting_clf', voting_clf)])
