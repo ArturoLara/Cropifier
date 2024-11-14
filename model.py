@@ -4,7 +4,12 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.metrics import confusion_matrix
-from sklearn.ensemble import RandomForestClassifier
+
+from sklearn.ensemble import RandomForestClassifier, VotingClassifier
+from sklearn.svm import  SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
+
 import joblib
 
 class Model:
@@ -22,7 +27,19 @@ class Model:
         input_preprocess.append(('varthresh', feat_selector))
 
         preprocess_pipe = Pipeline(input_preprocess)
-        classifier_pipe = Pipeline([('clf_RF', RandomForestClassifier(n_estimators=1000))])
+
+        voting_system = 'soft' #<-- choices are 'soft' , 'hard'
+
+        lin_clf  = LogisticRegression(max_iter=1000)
+        svm_clf  = SVC(kernel='rbf', degree=3, C=2, probability=True)
+        rf_clf = RandomForestClassifier(n_estimators=1000)
+        nbc_clf  = GaussianNB()
+
+        voting_clf = VotingClassifier(
+            estimators=[('lin', lin_clf),  ('svc', svm_clf), ('rf', rf_clf), ('nbc',nbc_clf)],
+            voting=voting_system)
+
+        classifier_pipe = Pipeline([('voting_clf', voting_clf)])
 
         self.__pipe = Pipeline([('preprocess', preprocess_pipe), ('classifier', classifier_pipe)])
 
