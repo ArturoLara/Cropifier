@@ -31,7 +31,7 @@ class Model:
         voting_system = 'soft' #<-- choices are 'soft' , 'hard'
 
         lin_clf  = LogisticRegression(max_iter=1000)
-        svm_clf  = SVC(kernel='rbf', degree=3, C=2, probability=True)
+        svm_clf  = SVC(kernel='poly', degree=8,probability=True)
         rf_clf = RandomForestClassifier(n_estimators=1000)
         nbc_clf  = GaussianNB()
 
