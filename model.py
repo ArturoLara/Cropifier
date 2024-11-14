@@ -7,8 +7,6 @@ from sklearn.metrics import confusion_matrix
 
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from sklearn.svm import  SVC
-from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import GaussianNB
 
 import joblib
 
@@ -30,14 +28,8 @@ class Model:
 
         voting_system = 'soft' #<-- choices are 'soft' , 'hard'
 
-        lin_clf  = LogisticRegression(max_iter=1000)
         svm_clf  = SVC(kernel='poly', degree=8,probability=True)
         rf_clf = RandomForestClassifier(n_estimators=1000)
-        nbc_clf  = GaussianNB()
-
-        # voting_clf = VotingClassifier(
-        #    estimators=[('lin', lin_clf),  ('svc', svm_clf), ('rf', rf_clf), ('nbc',nbc_clf)],
-        #    voting=voting_system)
         
         voting_clf = VotingClassifier(
             estimators=[('svc', svm_clf), ('rf', rf_clf)],
