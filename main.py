@@ -22,6 +22,12 @@ if __name__ == '__main__':
         c_matrix, class_names = model.export_conf_matrix(model.predict(x_data), y_data)
         tools.confusion_matrix(c_matrix, class_names)
 
+        # competition score
+        classes_repetitions = y_data.value_counts()
+        cm_diag = c_matrix.diagonal(0)
+        competition_score = cm_diag[2]/classes_repetitions['corn'] + cm_diag[0]/classes_repetitions['soybean'] + cm_diag[3]/classes_repetitions['cotton'] + cm_diag[4]/classes_repetitions['rice'] + cm_diag[1]/classes_repetitions['winter_wheat']
+        print(competition_score)
+
         if args.out_matrix:
             c_matrix, class_names = model.export_conf_matrix(model.predict(x_data), y_data)
             tools.confusion_matrix(c_matrix, class_names, args.out_matrix)
