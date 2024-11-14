@@ -1,5 +1,7 @@
 from imblearn.over_sampling import SMOTE
+from sklearn.ensemble import AdaBoostClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.neighbors import NearestNeighbors, NeighborhoodComponentsAnalysis, KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.feature_selection import VarianceThreshold
@@ -7,10 +9,13 @@ from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix
 import joblib
 
+
 class Model:
 
     __pipe = Pipeline
     __var_th = .02
+    x_test = []
+    y_test = []
 
     def __init__(self):
         input_preprocess = []
@@ -22,7 +27,9 @@ class Model:
         input_preprocess.append(('varthresh', feat_selector))
 
         preprocess_pipe = Pipeline(input_preprocess)
-        classifier_pipe = Pipeline([('clf_SVC', SVC(kernel='poly', degree=8))])
+        nca = NeighborhoodComponentsAnalysis(random_state=42)
+        knn = KNeighborsClassifier(n_neighbors=5)
+        classifier_pipe = Pipeline([('nca', nca), ('knn', knn)])
         self.__pipe = Pipeline([('preprocess', preprocess_pipe), ('classifier', classifier_pipe)])
 
     def load_model(self, model):
@@ -32,19 +39,20 @@ class Model:
 
         sm = SMOTE(random_state=42)
         x_res, y_res = sm.fit_resample(x_dataset, y_dataset)
-        x_train_init, x_test_init, y_train_init, y_test_init = train_test_split(x_res, y_res, test_size=0.2, random_state=1234)
+        x_train_init, self.x_test, y_train_init, self.y_test = train_test_split(x_res, y_res, test_size=0.2, random_state=1234)
 
         self.__pipe.fit(x_train_init, y_train_init[['Crop']].values.ravel())
         self.__export_model(output)
 
-        return self.__score(x_test_init, y_test_init)
+        return self.__score(self.x_test, self.y_test)
 
     def predict(self, x_dataset):
-        return self.__pipe.predict(x_dataset)
+       return self.__pipe.predict(x_dataset)
 
-    def export_conf_matrix(self, predictions, targets):
-        class_names = targets['Crop'].unique()
-        confusion_m = confusion_matrix(targets, predictions, labels=class_names)
+
+    def export_conf_matrix(self, predictions_to_mat):
+        class_names = self.y_test['Crop'].unique()
+        confusion_m = confusion_matrix(self.y_test, predictions_to_mat, labels=class_names)
 
         return confusion_m, class_names
 
