@@ -40,7 +40,7 @@ class Model:
         #    voting=voting_system)
         
         voting_clf = VotingClassifier(
-            estimators=[('svc', svm_clf), ('rf', rf_clf), ('nbc',nbc_clf)],
+            estimators=[('svc', svm_clf), ('rf', rf_clf)],
             voting=voting_system)
 
         classifier_pipe = Pipeline([('voting_clf', voting_clf)])
