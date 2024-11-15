@@ -35,17 +35,13 @@ class Model:
         rf_clf = RandomForestClassifier(n_estimators=1000)
         nca = NeighborhoodComponentsAnalysis(random_state=42)
         knn = KNeighborsClassifier(n_neighbors=3)
-        classifier_pipe = Pipeline([('nca', nca), ('knn', knn)])
+        nca_knn_pipe = Pipeline([('nca', nca), ('knn', knn)])
 
         voting_clf = VotingClassifier(
-            estimators=[('svc', svm_clf), ('rf', rf_clf)],
+            estimators=[('svc', svm_clf), ('rf', rf_clf), ('nca_knn', nca_knn_pipe)],
             voting=voting_system)
 
         classifier_pipe = Pipeline([('voting_clf', voting_clf)])
-
-        nca = NeighborhoodComponentsAnalysis(random_state=42)
-        knn = KNeighborsClassifier(n_neighbors=3)
-        classifier_pipe = Pipeline([('nca', nca), ('knn', knn)])
         self.__pipe = Pipeline([('preprocess', preprocess_pipe), ('classifier', classifier_pipe)])
 
     def load_model(self, model):
