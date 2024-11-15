@@ -28,7 +28,7 @@ class Model:
 
         preprocess_pipe = Pipeline(input_preprocess)
         nca = NeighborhoodComponentsAnalysis(random_state=42)
-        knn = KNeighborsClassifier(n_neighbors=5)
+        knn = KNeighborsClassifier(n_neighbors=3)
         classifier_pipe = Pipeline([('nca', nca), ('knn', knn)])
         self.__pipe = Pipeline([('preprocess', preprocess_pipe), ('classifier', classifier_pipe)])
 
