@@ -15,7 +15,7 @@ def get_args():
     return args
 
 #save plot
-def confusion_matrix(matrix, class_names, output = ""):
+def confusion_matrix(matrix, class_names, show = True, output = ""):
     # Visualizar la matriz de confusión con matplotlib
     plt.figure(figsize=(8, 6))
     plt.imshow(matrix, interpolation='nearest', cmap='Blues')
@@ -39,4 +39,5 @@ def confusion_matrix(matrix, class_names, output = ""):
     if output:
         plt.savefig(output)
     else:
-        plt.show()
+        if show:
+            plt.show()
