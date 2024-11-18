@@ -6,7 +6,9 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import StandardScaler
 import joblib
 
 
@@ -21,16 +23,15 @@ class Model:
         input_preprocess = []
 
         # eliminamos los datos que no varían casi (no dan mucha información)
-        unit_scaler = MinMaxScaler().set_output(transform="pandas")
+        unit_scaler = StandardScaler().set_output(transform="pandas")
         input_preprocess.append(('scaler1', unit_scaler))
         feat_selector = VarianceThreshold(self.__var_th).set_output(transform='pandas')
         input_preprocess.append(('varthresh', feat_selector))
 
         preprocess_pipe = Pipeline(input_preprocess)
-        nca = NeighborhoodComponentsAnalysis(random_state=42)
-        knn = KNeighborsClassifier(n_neighbors=5)
-        classifier_pipe = Pipeline([('nca', nca), ('knn', knn)])
-        self.__pipe = Pipeline([('preprocess', preprocess_pipe), ('classifier', classifier_pipe)])
+        clf = MLPClassifier(solver='adam', alpha=1e-4,
+                            hidden_layer_sizes=(30,40), random_state=1, max_iter=400, activation='tanh')
+        self.__pipe = Pipeline([('preprocess', preprocess_pipe), ('clf_net', clf)])
 
     def load_model(self, model):
         self.__pipe = joblib.load(model)
