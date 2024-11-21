@@ -1,10 +1,11 @@
 from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import NearestNeighbors, NeighborhoodComponentsAnalysis, KNeighborsClassifier
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.pipeline import Pipeline, FeatureUnion
+from sklearn.preprocessing import StandardScaler
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.metrics import confusion_matrix
+from sklearn.neural_network import MLPClassifier
 
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from sklearn.svm import  SVC
@@ -21,25 +22,26 @@ class Model:
     def __init__(self):
         input_preprocess = []
 
+
         # eliminamos los datos que no varían casi (no dan mucha información)
-        unit_scaler = MinMaxScaler().set_output(transform="pandas")
+        unit_scaler = StandardScaler().set_output(transform="pandas")
         input_preprocess.append(('scaler1', unit_scaler))
         feat_selector = VarianceThreshold(self.__var_th).set_output(transform='pandas')
         input_preprocess.append(('varthresh', feat_selector))
 
         preprocess_pipe = Pipeline(input_preprocess)
 
-        voting_system = 'soft' #<-- choices are 'soft' , 'hard'
-
-        svm_clf  = SVC(kernel='poly', degree=8,probability=True)
+        svm_clf  = SVC(kernel='poly', degree=12,probability=True)
         rf_clf = RandomForestClassifier(n_estimators=1000)
+        clf_net = MLPClassifier(solver='adam', alpha=1e-4,
+                            hidden_layer_sizes=(30,40), random_state=1, max_iter=400, activation='tanh')
         nca = NeighborhoodComponentsAnalysis(random_state=42)
         knn = KNeighborsClassifier(n_neighbors=3)
         nca_knn_pipe = Pipeline([('nca', nca), ('knn', knn)])
 
         voting_clf = VotingClassifier(
-            estimators=[('svc', svm_clf), ('rf', rf_clf), ('nca_knn', nca_knn_pipe)],
-            voting=voting_system)
+            estimators=[('svm_clf', svm_clf), ('rf_clf', rf_clf), ('nca_knn', nca_knn_pipe), ('clf_net', clf_net)],
+            voting='soft')
 
         classifier_pipe = Pipeline([('voting_clf', voting_clf)])
         self.__pipe = Pipeline([('preprocess', preprocess_pipe), ('classifier', classifier_pipe)])
@@ -51,7 +53,7 @@ class Model:
 
         sm = SMOTE(random_state=42)
         x_res, y_res = sm.fit_resample(x_dataset, y_dataset)
-        x_train_init, self.x_test, y_train_init, self.y_test = train_test_split(x_res, y_res, test_size=0.2, random_state=1234)
+        x_train_init, self.x_test, y_train_init, self.y_test = train_test_split(x_res, y_res, test_size=0.01, random_state=1234)
 
         self.__pipe.fit(x_train_init, y_train_init[['Crop']].values.ravel())
         self.__export_model(output)
