@@ -10,12 +10,7 @@ if __name__ == '__main__':
 
     x_data = pd.read_csv(args.x_dataset, sep = ';', decimal = '.', index_col='id')
 
-    if args.model_file: #predict
-        model.load_model(args.model_file)
-        prediction = model.predict(x_data)
-        dataframe = pd.DataFrame(prediction, columns=['Crop'], index=x_data.index)
-        dataframe.to_csv(args.output, sep = ';', decimal = '.')#, index_col='id')
-    elif args.y_dataset: #fit
+    if args.y_dataset: #fit
         y_data = pd.read_csv(args.y_dataset, sep = ';', decimal = '.', index_col='id')
         score = model.fit(x_data, y_data, args.output)
         print("Score obtenido tras el entrenamiento: ", score)
@@ -30,3 +25,6 @@ if __name__ == '__main__':
 
         if args.out_matrix:
             tools.confusion_matrix(c_matrix, class_names, False, args.out_matrix)
+
+    else:
+        print("Es necesario proporcionar un archivo con las etiquetas para entrenar")
